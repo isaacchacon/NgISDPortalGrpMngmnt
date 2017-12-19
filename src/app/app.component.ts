@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 
 import {SharepointListsWebService} from './sharepoint-lists-web.service';
 import {SharepointUserGroupWebService} from './sharepoint-usergroup-web.service';
-import {MOCKGROUPS} from './mock-tax-sp-groups';
 import {TaxSpGroup} from './tax-sp-group';
 import {GroupEntry} from './group-entry';
 import {TaxGroupManagement} from './tax-group-management';
@@ -18,7 +17,6 @@ import {TaxSpUser} from './tax-sp-user';
 			
 	`],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
 	providers: [SharepointListsWebService,SharepointUserGroupWebService]
 })
 export class AppComponent implements OnInit{
