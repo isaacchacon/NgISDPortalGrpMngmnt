@@ -4,8 +4,11 @@
 				<div class="form-horizontal" >
 					<div class="form-group" tooltip="You can enter one email or multiple emails separated by semi-colon ';'">
 						<label class="control-label col-sm-2"><strong>Search People:</strong></label>
-						<div class="col-sm-10">
+						<div class="col-sm-9">
 							<input [(ngModel)]="searchTerm" class="form-control" type="text" (keyup)="search();"   placeholder="type to search...">
+						</div>
+						<div class="col-sm-1">
+							<input type="button" class="btn btn-default" (click)="exit();"  value="Exit" />
 						</div>
 					</div>	
 				</div>
@@ -13,8 +16,8 @@
 					<thead>
 						<tr>						
 							<th style="width:10%;">Group Name</th>
-							<th style="width:30%;">Descriptionn</th>
-							<th style="width:5%;">Members</th>
+							<th style="width:28%;">Descriptionn</th>
+							<th style="width:7%;">Members</th>
 							<th style="width:55%;">Emails</th>
 						</tr>
 					</thead>
@@ -22,8 +25,8 @@
 						<tr [class.taxTableRow]="true" *ngFor="let group of groups;" (click)="onSelect(group)" [class.info]="group===selectedGroup">
 							<td style="word-wrap:break-word;">{{group.title}} </td>
 							<td style="word-wrap:break-word;">{{group.description}} </td>
-							<td style="word-wrap:break-word;">{{group.arrayOfEmails.length}} </td>
-							<td style="word-wrap:break-word;">{{group.emails}}</td>
+							<td style="word-wrap:break-word;text-align:center;">{{group.arrayOfEmails.length}} </td>
+							<td style="word-wrap:break-word;"><span [class.taxSearchFound]="searchTerm&&filterWorker(worker)"  *ngFor="let worker of group?.arrayOfEmails">{{worker}}</span></td>
 						</tr>
 					</tbody>
 				</table>
@@ -31,7 +34,7 @@
 			<div *ngIf="selectedGroup">
 				<input type="button" style="margin-bottom:10px;" class="btn btn-primary" (click)="selectedGroup=null;"  value="Go Back" />
 				<div class="well">
-					<h2>Add / Remove People for: {{selectedGroup.title}}</h2>	
+					<h2>Add / Remove People for: <strong>{{selectedGroup.title}}</strong></h2>	
 					<div style="padding-bottom:5px;">
 						<strong>Group description:</strong>
 						{{selectedGroup.description}}

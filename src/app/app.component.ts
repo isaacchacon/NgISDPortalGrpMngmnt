@@ -8,13 +8,15 @@ import {TaxSpGroup} from './tax-sp-group';
 import {GroupEntry} from './group-entry';
 import {TaxGroupManagement} from './tax-group-management';
 import {TaxSpUser} from './tax-sp-user';
-
+declare var window:any;
 
 @Component({
   selector: 'app-root',
   styles:[`.taxActive {background-color: #D9EDF7 !important;}
 			.taxTableRow {cursor:pointer;}
-			
+			.taxSearchFound {background-color:yellow;}
+			.container h1{text-align:center;}
+			.table-striped > tbody > tr:nth-of-type(2n+1) {background-color: #f2f2f2;}
 	`],
   templateUrl: './app.component.html',
 	providers: [SharepointListsWebService,SharepointUserGroupWebService]
@@ -130,11 +132,19 @@ export class AppComponent implements OnInit{
 		return entry.emails.toLowerCase().indexOf(this.searchTerm.toLowerCase())>=0;
 	}
 	
+	filterWorker(workerEmail:string):boolean{
+		return workerEmail.toLowerCase().trim().indexOf(this.searchTerm.toLowerCase())>=0;
+	}
+	
 	onSelect(group:GroupEntry):void{
 		this.selectedGroup = group;
 		this.emailsToErase = [];
 		this.errorAdding = '';
 		this.successMessage ='';
 		this.errorRemoving = '';
+	}
+	
+	exit():void{
+		window.location.href='/';
 	}
 }
