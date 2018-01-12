@@ -1,4 +1,4 @@
-import {SharepointListItem} from './sharepoint-list-item';
+import {SharepointListItem} from 'ng-tax-share-point-web-services-module';
 declare var $:any;
 
 

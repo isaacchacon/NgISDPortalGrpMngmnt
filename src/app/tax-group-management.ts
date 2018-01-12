@@ -1,9 +1,9 @@
-import {SharepointListsWebService} from './sharepoint-lists-web.service';
-import {SharepointUserGroupWebService} from './sharepoint-usergroup-web.service';
-import {TaxSpUser} from './tax-sp-user';
+import {SharepointListsWebService} from 'ng-tax-share-point-web-services-module';
+import {SharepointUserGroupWebService} from 'ng-tax-share-point-web-services-module';
+import {TaxSpUser} from 'ng-tax-share-point-web-services-module';
 import {GroupEntry} from './group-entry';
-import {SharepointListItem} from './sharepoint-list-item';
-import {UserInfoListEntry} from './user-info-list-entry';
+import {SharepointListItem} from 'ng-tax-share-point-web-services-module';
+import {UserInfoListEntry} from 'ng-tax-share-point-web-services-module';
 ///This is meant to be a business class that handles all the integration between sharepoint-list-item
 /// and sharepoint groups.
 
@@ -12,11 +12,35 @@ export class TaxGroupManagement{
 	constructor(private sharepointListsWebService: SharepointListsWebService,
 				private sharepointUserGroupWebService: SharepointUserGroupWebService){}
 
+				
+	//Will search for an item that contains the provided term in either the display name ,the 
+	// email or the Account Number. It is case insensitive search!!! What else could you ask for!! ? ?
+	searchForPeople(term:string): Promise<SharepointListItem[]>{
+		if(term){
+			let trimmedTerm = term.trim();
+			if(trimmedTerm.length>1){			
+				if(trimmedTerm){
+					return this.sharepointListsWebService.getListItems(UserInfoListEntry, null ,
+						"<Query><OrderBy><FieldRef Name ='Title'/></OrderBy><Where><And><Eq><FieldRef Name='ContentType' />"+
+						"<Value Type='Text'>Person</Value></Eq><Or><Or><Contains><FieldRef Name='EMail' /><Value Type='Text'>"+
+						trimmedTerm+"</Value></Contains><Contains><FieldRef Name='Title' /><Value Type='Text'>"+
+						trimmedTerm+"</Value></Contains></Or><Contains><FieldRef Name='Name' /><Value Type='Text'>"+
+						trimmedTerm+"</Value></Contains></Or></And></Where></Query>", null);
+				}
+			}
+		}
+		
+		//if any of the condition were false, return empty array.
+		return Promise.resolve([]);
+	}
+				
+				
+				
 	//tHIS ONE LOOKS UP USERS IN THE USER INFO TABLE INSTEAD OF THE USERGROUP.ASMX SERVICE
 	getLoginsFromUserProfile(emails:string[]):Promise<TaxSpUser[]>{
 		let promises: Promise<SharepointListItem[]>[] = [];
 		for(let email of emails){
-				promises.push(this.sharepointListsWebService.getListItems(UserInfoListEntry,["EMail", email]));
+				promises.push(this.sharepointListsWebService.getListItems(UserInfoListEntry,["EMail", email], null, null));
 		}
 		return Promise.all(promises).then(
 			function(internalRes){
@@ -26,7 +50,7 @@ export class TaxGroupManagement{
 					if(i){
 						tempCast = <UserInfoListEntry[]> i;
 						if(tempCast.length>0){
-							users.push({id:0,login:tempCast[0].loginName,email:"",displayName:""});
+							users.push({id:0,login:tempCast[0]["name"],email:"",displayName:""});
 						}
 					}
 				}
